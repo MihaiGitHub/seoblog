@@ -54,4 +54,43 @@ const userSchema = new mongoose.Schema(
   { timestamp: true }
 );
 
+// virtual field does not exist in db, just there so you can do some work on it before saving to db
+userSchema
+  .virtual("password")
+  .set(function (password) {
+    // create a temporary variable called password
+    this._password = password;
+
+    // generate salt for hashing algorithm
+    this.salt = this.makeSalt();
+
+    // encrypt password
+    this.hashed_password = this.encryptPassword(password);
+  })
+  .get(function () {
+    return this._password;
+  });
+
+// methods to be used with the user schema
+userSchema.methods = {
+  authenticate: function (plainText) {
+    return this.encryptPassword(plainText) == this.hashed_password;
+  },
+  encryptPassword: function (password) {
+    if (!password) return "";
+
+    try {
+      return crypto.createCipher
+        .createHmac("sha1", this.salt)
+        .update(password)
+        .digest("hex");
+    } catch (err) {
+      return "";
+    }
+  },
+  makeSalt: function () {
+    return Math.round(new Date().valueOf() + Math.random()) + "";
+  },
+};
+
 module.exports = mongoose.model("User", userSchema);
