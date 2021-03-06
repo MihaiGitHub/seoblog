@@ -13,7 +13,11 @@ const app = express();
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(cors());
+
+// avoid cors error in development; only for browser to browser communication, not postman etc
+if (process.env.NODE_ENV == "development") {
+  app.use(cors({ origin: `${process.env.CLIENT_URL}` }));
+}
 
 // add routes
 app.get("/api", (req, res) => {
