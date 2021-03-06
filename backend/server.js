@@ -7,6 +7,9 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
+// bring routes
+const blogRoutes = require("./routes/blog");
+
 // create app
 const app = express();
 
@@ -24,15 +27,13 @@ app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+// routes middleware
+app.use("/api", blogRoutes);
+
 // avoid cors error in development; only for browser to browser communication, not postman etc
 if (process.env.NODE_ENV == "development") {
   app.use(cors({ origin: `${process.env.CLIENT_URL}` }));
 }
-
-// add routes
-app.get("/api", (req, res) => {
-  res.json({ time: Date().toString() });
-});
 
 // use environment port
 const port = process.env.PORT || 8000;
