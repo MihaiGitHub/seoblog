@@ -64,3 +64,19 @@ exports.signin = (req, res) => {
     return res.json({ token, user: { _id, username, name, email, role } });
   });
 };
+
+exports.signout = (req, res) => {
+  res.clearCookie("token");
+  res.json({
+    message: "Signout success",
+  });
+};
+
+// middleware to protect routes
+// compares token secret with secret in env file
+// returns true or false
+exports.requireSignin = expressJwt({
+  secret: process.env.JWT_SECRET,
+  algorithms: ["HS256"], // required by latest express-jwt module
+  userProperty: "auth",
+});
