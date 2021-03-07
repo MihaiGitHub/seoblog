@@ -1,5 +1,8 @@
 const User = require("../models/user");
 const shortId = require("shortid");
+const jwt = require("jsonwebtoken");
+// can check if token is valid or expired
+const expressJwt = require("express-jwt");
 
 exports.signup = (req, res) => {
   User.findOne({ email: req.body.email }).exec((err, user) => {
@@ -27,5 +30,37 @@ exports.signup = (req, res) => {
 
       res.json({ message: "Signup success! Please signin." });
     });
+  });
+};
+
+exports.signin = (req, res) => {
+  // check if user exists
+  const { email, password } = req.body;
+  User.findOne({ email }).exec((err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        error: "User with that email does not exist. Please signup.",
+      });
+    }
+
+    // authenticate; uses authenticate method from User model which returns true or false
+    if (!user.authenticate(password)) {
+      return res.status(400).json({
+        error: "Email and password do not match.",
+      });
+    }
+
+    // generate jwt and send to client
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    // store token in cookie
+    res.cookie("token", token, { expiresIn: "1d" });
+
+    const { _id, username, name, email, role } = user;
+
+    // send token in response to front-end
+    return res.json({ token, user: { _id, username, name, email, role } });
   });
 };
