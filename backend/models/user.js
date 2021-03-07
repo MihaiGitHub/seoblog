@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema(
     profile: {
       type: String,
       required: true,
-    },
+    }, // save hashed version of password
     hashed_password: {
       type: String,
       required: true,
@@ -54,11 +54,12 @@ const userSchema = new mongoose.Schema(
   { timestamp: true }
 );
 
-// virtual field does not exist in db, just there so you can do some work on it before saving to db
+// virtual field does not exist in db
+// just there so you can do some work on it before saving to db
 userSchema
   .virtual("password")
   .set(function (password) {
-    // create a temporary variable called password
+    // create a temporary variable called _password
     this._password = password;
 
     // generate salt for hashing algorithm
@@ -80,7 +81,7 @@ userSchema.methods = {
     if (!password) return "";
 
     try {
-      return crypto.createCipher
+      return crypto
         .createHmac("sha1", this.salt)
         .update(password)
         .digest("hex");
