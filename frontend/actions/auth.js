@@ -32,6 +32,20 @@ export const signin = (user) => {
     .catch((err) => console.log(err));
 };
 
+export const signout = (next) => {
+  removeCookie("token");
+  removeLocalStorage("user");
+  next();
+
+  return fetch(`${API}/signout`, {
+    method: "GET",
+  })
+    .then((response) => {
+      console.log("signout success");
+    })
+    .catch((error) => console.log(error));
+};
+
 export const setCookie = (key, value) => {
   // with Next.js this runs in both client and server side
   // check that we are in client side
