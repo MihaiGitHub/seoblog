@@ -1,4 +1,5 @@
 import fetch from "isomorphic-fetch";
+import cookie from "js-cookie";
 import { API } from "../config";
 
 export const signup = (user) => {
@@ -29,4 +30,65 @@ export const signin = (user) => {
       return response.json();
     })
     .catch((err) => console.log(err));
+};
+
+export const setCookie = (key, value) => {
+  // with Next.js this runs in both client and server side
+  // check that we are in client side
+  if (process.browser) {
+    cookie.set(key, value, {
+      expires: 1, // expires in 1 day
+    });
+  }
+};
+
+export const removeCookie = (key) => {
+  // with Next.js this runs in both client and server side
+  // check that we are in client side
+  if (process.browser) {
+    cookie.remove(key, {
+      expires: 1,
+    });
+  }
+};
+
+export const getCookie = (key, value) => {
+  // with Next.js this runs in both client and server side
+  // check that we are in client side
+  if (process.browser) {
+    cookie.get(key);
+  }
+};
+
+export const setLocalStorage = (key, value) => {
+  if (process.browser) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+};
+
+export const removeLocalStorage = (key) => {
+  if (process.browser) {
+    localStorage.removeItem(key);
+  }
+};
+
+export const authenticate = (data, next) => {
+  // cookie considered better option to store token
+  setCookie("token", data.token);
+  setLocalStorage("user", data.user);
+  next();
+};
+
+// check if token is in cookie and user in local storage
+export const isAuth = () => {
+  if (process.browser) {
+    const cookieChecked = getCookie("token");
+    if (cookieChecked) {
+      if (localStorage.getItem("user")) {
+        return JSON.parse(localStorage.getItem("user"));
+      } else {
+        return false;
+      }
+    }
+  }
 };
