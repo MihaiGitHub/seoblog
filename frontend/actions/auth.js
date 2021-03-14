@@ -70,7 +70,7 @@ export const getCookie = (key, value) => {
   // with Next.js this runs in both client and server side
   // check that we are in client side
   if (process.browser) {
-    cookie.get(key);
+    return cookie.get(key);
   }
 };
 
