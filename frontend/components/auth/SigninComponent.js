@@ -35,8 +35,11 @@ const SigninComponent = () => {
 
         // authenticate user
         authenticate(data, () => {
-          // comes with Next.js
-          Router.push(`/`);
+          if (isAuth() && isAuth().role == 1) {
+            Router.push(`/admin`);
+          } else {
+            Router.push(`/user`);
+          }
         });
       }
     });
