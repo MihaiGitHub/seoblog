@@ -80,3 +80,40 @@ exports.requireSignin = expressJwt({
   algorithms: ["HS256"], // required by latest express-jwt module
   userProperty: "auth",
 });
+
+exports.authMiddleware = (req, res, next) => {
+  // _id made available on the request above by the userProperty: auth
+  const authUserId = req.auth._id;
+
+  User.findById({ _id: authUserId }).exec((err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        error: "User not found",
+      });
+    }
+
+    req.profile = user;
+    next();
+  });
+};
+
+exports.adminMiddleware = (req, res, next) => {
+  const adminUserId = req.user._id;
+
+  User.findById({ _id: adminUserId }).exec((err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        error: "User not found",
+      });
+    }
+
+    if (user.role !== 1) {
+      return res.status(400).json({
+        error: "Admin resource. Access denied",
+      });
+    }
+
+    req.profile = user;
+    next();
+  });
+};

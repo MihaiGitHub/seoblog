@@ -10,6 +10,7 @@ require("dotenv").config();
 // bring routes
 const blogRoutes = require("./routes/blog");
 const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/user");
 
 // create app
 const app = express();
@@ -31,6 +32,7 @@ app.use(cookieParser());
 // routes middleware
 app.use("/api", blogRoutes);
 app.use("/api", authRoutes);
+app.use("/api", userRoutes);
 
 // avoid cors error in development; only for browser to browser communication, not postman etc
 if (process.env.NODE_ENV == "development") {
