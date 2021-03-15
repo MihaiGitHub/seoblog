@@ -4,7 +4,5 @@
   "/_error": "pages/_error.js",
   "/signin": "pages/signin.js",
   "/user": "pages/user.js",
-  "/admin": "pages/admin.js",
-  "/next/dist/pages/_error": "pages/next/dist/pages/_error.js",
   "/": "pages/index.js"
 }
