@@ -5,7 +5,7 @@ const { create } = require("../controllers/category");
 
 // validators
 const { runValidation } = require("../validators");
-const { categoryCreateValidator } = require("../validators/auth");
+const { categoryCreateValidator } = require("../validators/category");
 
 router.post(
   "/category",

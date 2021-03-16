@@ -98,7 +98,8 @@ exports.authMiddleware = (req, res, next) => {
 };
 
 exports.adminMiddleware = (req, res, next) => {
-  const adminUserId = req.user._id;
+  // _id made available on the request above by the userProperty: auth
+  const adminUserId = req.auth._id;
 
   User.findById({ _id: adminUserId }).exec((err, user) => {
     if (err || !user) {
