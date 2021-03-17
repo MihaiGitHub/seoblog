@@ -18,6 +18,7 @@ import {
   DropdownItem,
   NavbarText,
 } from "reactstrap";
+//import ".././node_modules/nprogress/nprogress";
 
 // implement progress bar on top
 Router.onRouteChangeStart = (url) => NProgress.start();
