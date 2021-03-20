@@ -155,3 +155,5 @@ const Tag = () => {
     </React.Fragment>
   );
 };
+
+export default Tag;
