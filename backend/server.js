@@ -17,6 +17,11 @@ const tagRoutes = require("./routes/tag");
 // create app
 const app = express();
 
+// avoid cors error in development; only for browser to browser communication, not postman etc
+if (process.env.NODE_ENV == "development") {
+  app.use(cors({ origin: `${process.env.CLIENT_URL}` }));
+}
+
 // connect to db
 mongoose
   .connect(process.env.DATABASE_CLOUD, {
@@ -37,11 +42,6 @@ app.use("/api", authRoutes);
 app.use("/api", userRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", tagRoutes);
-
-// avoid cors error in development; only for browser to browser communication, not postman etc
-if (process.env.NODE_ENV == "development") {
-  app.use(cors({ origin: `${process.env.CLIENT_URL}` }));
-}
 
 // use environment port
 const port = process.env.PORT || 8000;

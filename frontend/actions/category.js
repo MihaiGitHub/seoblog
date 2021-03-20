@@ -17,7 +17,7 @@ export const create = (category, token) => {
     .catch((err) => console.log(err));
 };
 
-export const getCategory = () => {
+export const getCategories = () => {
   return fetch(`${API}/categories`, {
     method: "GET",
   })
