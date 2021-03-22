@@ -1,11 +1,9 @@
-const Blog = require("../models/blog");
 const formidable = require("formidable");
 const slugify = require("slugify");
 // strip HTML and create exerpt
-const stripHtml = require("string-strip-html");
+const { stripHtml } = require("string-strip-html");
 const _ = require("lodash");
-const Category = require("../models/category");
-const Tag = require("../models/tag");
+const Blog = require("../models/blog");
 const { errorHandler } = require("../helpers/dbErrorHandler");
 const fs = require("fs");
 
@@ -23,7 +21,7 @@ exports.create = (req, res) => {
       });
     }
 
-    const { title, body, categories, tags } = fields;
+    const { title, body } = fields;
 
     let blog = new Blog();
 
@@ -31,8 +29,8 @@ exports.create = (req, res) => {
     blog.body = body;
     blog.slug = slugify(title).toLowerCase();
     blog.mtitle = `${title} | ${process.env.APP_NAME}`;
-    blog.mdesc = stripHtml(body.substring(0, 160));
-    blog.postedBy = req.user._id;
+    blog.mdesc = stripHtml(body.substring(0, 160)).result;
+    blog.postedBy = req.auth._id;
 
     if (files.photo) {
       if (files.photo.size > 10000000) {
