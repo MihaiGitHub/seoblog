@@ -21,7 +21,31 @@ exports.create = (req, res) => {
       });
     }
 
-    const { title, body } = fields;
+    const { title, body, categories, tags } = fields;
+
+    if (!title || !title.length) {
+      return res.status(400).json({
+        error: "Title is required",
+      });
+    }
+
+    if (!body || body.length < 200) {
+      return res.status(400).json({
+        error: "Content is too short",
+      });
+    }
+
+    if (!categories || categories.length == 0) {
+      return res.status(400).json({
+        error: "At least category is required",
+      });
+    }
+
+    if (!tags || tags.length == 0) {
+      return res.status(400).json({
+        error: "At least one tag is required",
+      });
+    }
 
     let blog = new Blog();
 
@@ -31,6 +55,12 @@ exports.create = (req, res) => {
     blog.mtitle = `${title} | ${process.env.APP_NAME}`;
     blog.mdesc = stripHtml(body.substring(0, 160)).result;
     blog.postedBy = req.auth._id;
+
+    // create categories array from incoming string
+    let arrayOfCategories = categories && categories.split(",");
+
+    // create tags array from incoming string
+    let arrayOfTags = tags && tags.split(",");
 
     if (files.photo) {
       if (files.photo.size > 10000000) {
@@ -52,7 +82,36 @@ exports.create = (req, res) => {
         });
       }
 
-      res.json(result);
+      // use id of the recently saved blog to find it again and update with categories
+      // and return the newly updated blog with new: true
+      Blog.findByIdAndUpdate(
+        result._id,
+        {
+          $push: { categories: arrayOfCategories },
+        },
+        { new: true }
+      ).exec((err, result) => {
+        if (err) {
+          return res.status(400).json({
+            error: errorHandler(err),
+          });
+        } else {
+          // do the same for tags
+          Blog.findByIdAndUpdate(
+            result._id,
+            { $push: { tags: arrayOfTags } },
+            { new: true }
+          ).exec((err, result) => {
+            if (err) {
+              return res.status(400).json({
+                error: errorHandler(err),
+              });
+            } else {
+              res.json(result);
+            }
+          });
+        }
+      });
     });
   });
 };
