@@ -1,5 +1,10 @@
 {
   "/_document": "pages/_document.js",
   "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js"
+  "/_error": "pages/_error.js",
+  "/": "pages/index.js",
+  "/next/dist/pages/_error": "pages/next/dist/pages/_error.js",
+  "/signin": "pages/signin.js",
+  "/admin": "pages/admin.js",
+  "/admin/crud/blog": "pages/admin/crud/blog.js"
 }
