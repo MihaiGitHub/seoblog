@@ -14,11 +14,62 @@ const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 //import "../../node_modules/react-quill/dist/quill.snow.css";
 
 const CreateBlog = () => {
-  return (
-    <div>
-      <h2>Create blog form</h2>
-    </div>
-  );
+  const [body, setBody] = useState({});
+  const [values, setValues] = useState({
+    error: "",
+    sizeError: "",
+    success: "",
+    formData: "",
+    title: "",
+    hidePublishButton: false,
+  });
+
+  const {
+    error,
+    sizeError,
+    success,
+    formData,
+    title,
+    hidePublishButton,
+  } = values;
+
+  const publishBlog = (e) => {
+    e.preventDefault();
+  };
+
+  const handleChange = (name) => (e) => {};
+
+  const handleBody = (name) => (e) => {};
+
+  const createBlogForm = () => {
+    return (
+      <form onSubmit={publishBlog}>
+        <div className="form-group">
+          <label className="text-muted">Title</label>
+          <input
+            type="text"
+            onChange={handleChange("title")}
+            className="form-control"
+            value={title}
+          />
+        </div>
+        <div className="form-group">
+          <ReactQuill
+            value={body}
+            placeholder="Write something amazing"
+            onChange={handleBody}
+          />
+        </div>
+        <div>
+          <button type="submit" className="btn btn-primary">
+            Publish
+          </button>
+        </div>
+      </form>
+    );
+  };
+
+  return <div>{createBlogForm()}</div>;
 };
 
 // get access to the router props
