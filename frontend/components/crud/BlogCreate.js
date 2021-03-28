@@ -14,7 +14,19 @@ const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 //import "../../node_modules/react-quill/dist/quill.snow.css";
 
 const CreateBlog = () => {
-  const [body, setBody] = useState({});
+  const blogFromLS = () => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+
+    if (localStorage.getItem("blog")) {
+      return JSON.parse(localStorage.getItem("blog"));
+    } else {
+      return false;
+    }
+  };
+
+  const [body, setBody] = useState(blogFromLS());
   const [values, setValues] = useState({
     error: "",
     sizeError: "",
@@ -33,13 +45,34 @@ const CreateBlog = () => {
     hidePublishButton,
   } = values;
 
+  useEffect(() => {
+    // anytime the page reloads run this function and have FormData ready to use
+    setValues({ ...values, formData: new FormData() });
+  }, [router]);
+
   const publishBlog = (e) => {
     e.preventDefault();
   };
 
-  const handleChange = (name) => (e) => {};
+  const handleChange = (name) => (e) => {
+    const value = name === "photo" ? e.target.files[0] : e.target.value;
 
-  const handleBody = (name) => (e) => {};
+    // populate formData with the name and value, send all data from form as form data to backend
+    formData.set(name, value);
+
+    // populate the state
+    setValues({ ...values, [name]: value, formData, error: "" });
+  };
+
+  const handleBody = (name) => (e) => {
+    setBody(e);
+    formData.set("body", e);
+
+    // set body in local storage so its not lost on page refresh
+    if (typeof window !== "undefined") {
+      localStorage.setItem("blog", JSON.stringify(e));
+    }
+  };
 
   const createBlogForm = () => {
     return (
@@ -58,6 +91,8 @@ const CreateBlog = () => {
             value={body}
             placeholder="Write something amazing"
             onChange={handleBody}
+            modules={CreateBlog.modules}
+            formats={CreateBlog.formats}
           />
         </div>
         <div>
@@ -69,8 +104,43 @@ const CreateBlog = () => {
     );
   };
 
-  return <div>{createBlogForm()}</div>;
+  return (
+    <div>
+      {createBlogForm()}
+      <hr />
+      {JSON.stringify(title)}
+    </div>
+  );
 };
+
+CreateBlog.modules = {
+  toolbar: [
+    [{ header: "1" }, { header: "2" }, { header: [3, 4, 5, 6] }, { font: [] }],
+    [{ size: [] }],
+    ["bold", "italic", "underline", "strike", "blockquote"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["link", "image", "video"],
+    ["clean"],
+    ["code-block"],
+  ],
+};
+
+CreateBlog.formats = [
+  "header",
+  "font",
+  "size",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "blockquote",
+  "list",
+  "bullet",
+  "link",
+  "image",
+  "video",
+  "code-block",
+];
 
 // get access to the router props
 export default withRouter(CreateBlog);
