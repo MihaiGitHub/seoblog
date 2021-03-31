@@ -29,6 +29,9 @@ const CreateBlog = () => {
   const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
 
+  const [checked, setChecked] = useState([]); // categories
+  const [checkedTag, setCheckedTag] = useState([]); // tags
+
   const [body, setBody] = useState(blogFromLS());
   const [values, setValues] = useState({
     error: "",
@@ -99,12 +102,41 @@ const CreateBlog = () => {
     }
   };
 
+  const handleToggle = (c) => () => {
+    setValues({ ...values, error: "" });
+
+    // return the first index or -1 if it does not find the category
+    const clickedCategory = checked.indexOf(c);
+
+    // whatever is in state store in this variable
+    const all = [...checked];
+
+    // if the category id doesn't exist in the state push to this variable
+    if (clickedCategory == -1) {
+      all.push(c);
+    } else {
+      // if its already there then remove the category id from the array
+      all.splice(clickedCategory, 1);
+    }
+
+    setChecked(all);
+
+    console.log("all ", all);
+
+    // update form data for sending to backend
+    formData.set("categories", all);
+  };
+
   const showCategories = () => {
     return (
       categories &&
       categories.map((c, i) => (
         <li key={i} className="list-unstyled">
-          <input type="checkbox" className="mr-2" />
+          <input
+            onChange={handleToggle(c._id)}
+            type="checkbox"
+            className="mr-2"
+          />
           <label className="form-check-label">{c.name}</label>
         </li>
       ))
