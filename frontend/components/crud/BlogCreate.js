@@ -55,7 +55,7 @@ const CreateBlog = () => {
     // anytime the page reloads run this function and have FormData ready to use
     setValues({ ...values, formData: new FormData() });
     initCategories();
-    initCategories();
+    initTags();
   }, [Router]);
 
   const initCategories = () => {
@@ -121,10 +121,31 @@ const CreateBlog = () => {
 
     setChecked(all);
 
-    console.log("all ", all);
-
     // update form data for sending to backend
     formData.set("categories", all);
+  };
+
+  const handleTagsToggle = (t) => () => {
+    setValues({ ...values, error: "" });
+
+    // return the first index or -1 if it does not find the category
+    const clickedTag = checked.indexOf(t);
+
+    // whatever is in state store in this variable
+    const all = [...checked];
+
+    // if the category id doesn't exist in the state push to this variable
+    if (clickedTag == -1) {
+      all.push(t);
+    } else {
+      // if its already there then remove the category id from the array
+      all.splice(clickedTag, 1);
+    }
+
+    setCheckedTag(all);
+
+    // update form data for sending to backend
+    formData.set("tags", all);
   };
 
   const showCategories = () => {
@@ -148,7 +169,11 @@ const CreateBlog = () => {
       tags &&
       tags.map((t, i) => (
         <li key={i} className="list-unstyled">
-          <input type="checkbox" className="mr-2" />
+          <input
+            onChange={handleTagsToggle(t._id)}
+            type="checkbox"
+            className="mr-2"
+          />
           <label className="form-check-label">{t.name}</label>
         </li>
       ))
