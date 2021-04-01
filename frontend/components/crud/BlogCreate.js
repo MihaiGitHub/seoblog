@@ -50,6 +50,7 @@ const CreateBlog = () => {
     title,
     hidePublishButton,
   } = values;
+  const token = getCookie("token");
 
   useEffect(() => {
     // anytime the page reloads run this function and have FormData ready to use
@@ -80,6 +81,24 @@ const CreateBlog = () => {
 
   const publishBlog = (e) => {
     e.preventDefault();
+
+    console.log("formdata ", formData);
+
+    createBlog(formData, token).then((data) => {
+      if (data.error) {
+        setValues({ ...values, error: data.error });
+      } else {
+        setValues({
+          ...values,
+          title: "",
+          error: "",
+          success: `A new blog titled "${data.title}" is created`,
+        });
+        setBody("");
+        setCategories([]);
+        setTags([]);
+      }
+    });
   };
 
   const handleChange = (name) => (e) => {
@@ -92,13 +111,13 @@ const CreateBlog = () => {
     setValues({ ...values, [name]: value, formData, error: "" });
   };
 
-  const handleBody = (name) => (e) => {
-    setBody(e);
-    formData.set("body", e);
+  const handleBody = (body) => {
+    setBody(body);
+    formData.set("body", body);
 
     // set body in local storage so its not lost on page refresh
     if (typeof window !== "undefined") {
-      localStorage.setItem("blog", JSON.stringify(e));
+      localStorage.setItem("blog", JSON.stringify(body));
     }
   };
 
@@ -225,6 +244,22 @@ const CreateBlog = () => {
           {JSON.stringify(tags)}
         </div>
         <div className="col-md-4">
+          <div>
+            <div className="form-group pb-b">
+              <h5>Featured Image</h5>
+              <hr />
+              <small className="text-muted">Max size: 1mb</small>
+              <label className="btn btn-outline-info">
+                Upload featured image
+                <input
+                  onChange={handleChange("photo")}
+                  type="file"
+                  accept="image/*"
+                  hidden
+                />
+              </label>
+            </div>
+          </div>
           <div>
             <h5>Categories</h5>
             <hr />
