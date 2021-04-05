@@ -190,8 +190,40 @@ exports.listAllBlogsCategoriesTags = (req, res) => {
     });
 };
 
-exports.read = (req, res) => {};
+exports.read = (req, res) => {
+  const slug = req.params.slug.toLowerCase();
 
-exports.remove = (req, res) => {};
+  Blog.findOne({ slug })
+    .populate("categories", "_id name slug")
+    .populate("tags", "_id name slug")
+    .populate("postedBy", "_id name username")
+    .select(
+      "_id title slug mtitle mdesc categories tags postedBy createdAd updatedAt"
+    )
+    .exec((err, data) => {
+      if (err) {
+        return res.json({
+          error: errorHandler(err),
+        });
+      }
+
+      res.json(data);
+    });
+};
+
+exports.remove = (req, res) => {
+  const slug = req.params.slug.toLowerCase();
+
+  Blog.findOneAndRemove({ slug }).exec((err, data) => {
+    if (err) {
+      return res.json({
+        error: errorHandler(err),
+      });
+    }
+    res.json({
+      message: "Blog deleted successfully",
+    });
+  });
+};
 
 exports.update = (req, res) => {};
