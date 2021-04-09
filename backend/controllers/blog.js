@@ -287,8 +287,27 @@ exports.update = (req, res) => {
           });
         }
 
+        // don't send the photo to front-end
+        result.photo = undefined;
         res.json(result);
       });
     });
   });
+};
+
+// send blog photo to frontend
+exports.photo = (req, res) => {
+  const slug = req.params.slug.toLowerCase();
+  Blog.findOne({ slug })
+    .select("photo")
+    .exec((err, blog) => {
+      if (err || !blog) {
+        return res.status(400).json({
+          error: errorHandler(err),
+        });
+      }
+
+      res.set("Content-Type", blog.photo.contentType);
+      return res.send(blog.photo.data);
+    });
 };
