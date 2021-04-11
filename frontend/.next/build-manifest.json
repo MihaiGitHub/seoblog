@@ -24,20 +24,15 @@
       "static/chunks/webpack.js",
       "static/chunks/pages/_error.js"
     ],
-    "/admin": [
+    "/admin/crud/blog": [
       "static/chunks/main.js",
       "static/chunks/webpack.js",
-      "static/chunks/pages/admin.js"
+      "static/chunks/pages/admin/crud/blog.js"
     ],
     "/blogs": [
       "static/chunks/main.js",
       "static/chunks/webpack.js",
       "static/chunks/pages/blogs.js"
-    ],
-    "/signin": [
-      "static/chunks/main.js",
-      "static/chunks/webpack.js",
-      "static/chunks/pages/signin.js"
     ]
   },
   "ampFirstPages": []
