@@ -8,5 +8,6 @@ module.exports = withCSS({
     PRODUCTION: false,
     DOMAIN_DEVELOPMENT: "http://localhost:3000",
     DOMAIN_PRODUCTION: "https://seoblog.com",
+    FB_APP_ID: "2123444421",
   },
 });
