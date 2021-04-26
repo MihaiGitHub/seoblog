@@ -8,7 +8,44 @@ import Card from "../../components/blog/Card";
 import { API, DOMAIN, APP_NAME, FB_APP_ID } from "../../config";
 
 // props accessible from getInitialProps
-const Blogs = ({ blogs, categories, tags, size, router }) => {
+const Blogs = ({
+  blogs,
+  categories,
+  tags,
+  totalBlogs,
+  blogsLimit,
+  blogSkip,
+  router,
+}) => {
+  const [limit, setLimit] = useState(blogsLimit);
+  const [skip, setSkip] = useState(0);
+  const [size, setSize] = useState(totalBlogs);
+  const [loadedBlogs, setLoadedBlogs] = useState([]);
+
+  const loadMore = () => {
+    let toSkip = skip + limit;
+    listBlogsWithCategoriesAndTags(toSkip, limit).then((data) => {
+      if (data.error) {
+        console.log(data.error);
+      } else {
+        setLoadedBlogs([...loadedBlogs, ...data.blogs]);
+        setSize(data.size);
+        setSkip(toSkip);
+      }
+    });
+  };
+
+  const loadMoreButton = () => {
+    return (
+      size > 0 &&
+      size >= limit && (
+        <button onClick={loadMore} className="btn btn-outline-primary btn-lg">
+          Load More
+        </button>
+      )
+    );
+  };
+
   const head = () => (
     <Head>
       <title>Programming blogs | {APP_NAME}</title>
@@ -59,6 +96,14 @@ const Blogs = ({ blogs, categories, tags, size, router }) => {
     ));
   };
 
+  const showLoadedBlogs = () => {
+    return loadedBlogs.map((blog, i) => (
+      <article key={i}>
+        <Card blog={blog} />
+      </article>
+    ));
+  };
+
   return (
     <React.Fragment>
       {head()}
@@ -80,12 +125,9 @@ const Blogs = ({ blogs, categories, tags, size, router }) => {
               </section>
             </header>
           </div>
-          <div className="container-fluid">
-            <div className="row">
-              {/* rendered server side */}
-              <div className="col-md-12">{showAllBlogs()}</div>
-            </div>
-          </div>
+          <div className="container-fluid">{showAllBlogs()}</div>
+          <div className="container-fluid">{showLoadedBlogs()}</div>
+          <div className="container-fluid text-center">{loadMoreButton()}</div>
         </main>
       </Layout>
     </React.Fragment>
@@ -95,8 +137,11 @@ const Blogs = ({ blogs, categories, tags, size, router }) => {
 // method executed server side
 // server render the page (can only be used on pages, not in components)
 Blogs.getInitialProps = () => {
+  let skip = 0;
+  let limit = 2;
+
   // make request to backend, get data, and return data
-  return listBlogsWithCategoriesAndTags().then((data) => {
+  return listBlogsWithCategoriesAndTags(skip, limit).then((data) => {
     if (data.error) {
       console.log(data.error);
     } else {
@@ -105,7 +150,9 @@ Blogs.getInitialProps = () => {
         blogs: data.blogs,
         categories: data.categories,
         tags: data.tags,
-        size: data.size,
+        totalBlogs: data.size,
+        blogsLimit: limit,
+        blogSkip: skip,
       };
     }
   });
