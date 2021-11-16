@@ -44,7 +44,6 @@ exports.read = (req, res) => {
       });
     }
 
-    //  res.json(category);
     Blog.find({ categories: category })
       .populate("categories", "_id name slug")
       .populate("tags", "_id name slug")
