@@ -19,6 +19,7 @@ import {
   NavbarText,
 } from "reactstrap";
 //import ".././node_modules/nprogress/nprogress";
+import Search from "./blog/Search";
 
 // implement progress bar on top
 Router.onRouteChangeStart = (url) => NProgress.start();
@@ -33,7 +34,7 @@ const Header = () => {
   };
 
   return (
-    <div>
+    <React.Fragment>
       <Navbar color="light" light expand="md">
         <Link href="/">
           <NavLink className="font-weight-bold">{APP_NAME}</NavLink>
@@ -96,7 +97,8 @@ const Header = () => {
           </Nav>
         </Collapse>
       </Navbar>
-    </div>
+      <Search />
+    </React.Fragment>
   );
 };
 
