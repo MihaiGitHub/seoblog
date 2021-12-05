@@ -151,7 +151,7 @@ const ProfileUpdate = () => {
         <label className="text-muted">Password</label>
         <input
           onChange={handleChange("password")}
-          type="text"
+          type="password"
           value={password}
           className="form-control"
         />
