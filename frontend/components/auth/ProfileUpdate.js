@@ -9,6 +9,7 @@ const ProfileUpdate = () => {
     username: "",
     name: "",
     email: "",
+    about: "",
     password: "",
     error: false,
     success: false,
@@ -22,6 +23,7 @@ const ProfileUpdate = () => {
     username,
     name,
     email,
+    about,
     password,
     error,
     success,
@@ -50,12 +52,84 @@ const ProfileUpdate = () => {
     init();
   }, []);
 
+  // first get the name, then the event, then handle it
+  const handleChange = (name) => (e) => {};
+
+  const handleSubmit = (e) => {
+    //
+  };
+
+  const profileUpdateForm = () => (
+    <form onSubmit={handleSubmit}>
+      <div className="form-group">
+        <label className="text-muted">Profile photo</label>
+        {/* accept all image files */}
+        <input
+          onChange={handleChange("photo")}
+          type="file"
+          accept="image/*"
+          className="form-control"
+        />
+      </div>
+      <div className="form-group">
+        <label className="text-muted">Username</label>
+        <input
+          onChange={handleChange("username")}
+          type="text"
+          value={username}
+          className="form-control"
+        />
+      </div>
+      <div className="form-group">
+        <label className="text-muted">Name</label>
+        <input
+          onChange={handleChange("name")}
+          type="text"
+          value={name}
+          className="form-control"
+        />
+      </div>
+      <div className="form-group">
+        <label className="text-muted">Email</label>
+        <input
+          onChange={handleChange("email")}
+          type="text"
+          value={email}
+          className="form-control"
+        />
+      </div>
+      <div className="form-group">
+        <label className="text-muted">About</label>
+        <input
+          onChange={handleChange("about")}
+          type="text"
+          value={about}
+          className="form-control"
+        />
+      </div>
+      <div className="form-group">
+        <label className="text-muted">Password</label>
+        <input
+          onChange={handleChange("password")}
+          type="text"
+          value={password}
+          className="form-control"
+        />
+      </div>
+      <div>
+        <button type="submit" className="btn btn-primary">
+          Submit
+        </button>
+      </div>
+    </form>
+  );
+
   return (
     <React.Fragment>
       <div className="container">
         <div className="row">
           <div className="col-md-4">image</div>
-          <div className="col-md-12">update form</div>
+          <div className="col-md-12">{profileUpdateForm()}</div>
         </div>
       </div>
     </React.Fragment>
