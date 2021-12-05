@@ -57,21 +57,44 @@ const ProfileUpdate = () => {
     const value = name === "photo" ? e.target.files[0] : e.target.value;
 
     // populate formData with the name and value, send all data from form as form data to backend
-    userData = new FormData();
-    userData.set(name, value);
+    let userFormData = new FormData();
+    userFormData.set(name, value);
 
     // populate the state
     setValues({
       ...values,
       [name]: value,
-      userData,
+      userData: userFormData,
       error: false,
       success: false,
     });
   };
 
   const handleSubmit = (e) => {
-    //
+    e.preventDefault();
+
+    setValues({ ...values, loading: true });
+
+    update(token, userData).then((data) => {
+      if (data.error) {
+        setValues({
+          ...values,
+          error: data.error,
+          success: false,
+          loading: false,
+        });
+      } else {
+        setValues({
+          ...values,
+          username: data.username,
+          name: data.name,
+          email: data.email,
+          about: data.about,
+          success: true,
+          loading: false,
+        });
+      }
+    });
   };
 
   const profileUpdateForm = () => (
