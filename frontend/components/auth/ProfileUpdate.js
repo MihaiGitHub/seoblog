@@ -53,7 +53,22 @@ const ProfileUpdate = () => {
   }, []);
 
   // first get the name, then the event, then handle it
-  const handleChange = (name) => (e) => {};
+  const handleChange = (name) => (e) => {
+    const value = name === "photo" ? e.target.files[0] : e.target.value;
+
+    // populate formData with the name and value, send all data from form as form data to backend
+    userData = new FormData();
+    userData.set(name, value);
+
+    // populate the state
+    setValues({
+      ...values,
+      [name]: value,
+      userData,
+      error: false,
+      success: false,
+    });
+  };
 
   const handleSubmit = (e) => {
     //
@@ -62,14 +77,16 @@ const ProfileUpdate = () => {
   const profileUpdateForm = () => (
     <form onSubmit={handleSubmit}>
       <div className="form-group">
-        <label className="text-muted">Profile photo</label>
-        {/* accept all image files */}
-        <input
-          onChange={handleChange("photo")}
-          type="file"
-          accept="image/*"
-          className="form-control"
-        />
+        <label className="btn btn-outline-info">
+          Upload featured image
+          {/* accept all image files */}
+          <input
+            onChange={handleChange("photo")}
+            type="file"
+            accept="image/*"
+            hidden
+          />
+        </label>
       </div>
       <div className="form-group">
         <label className="text-muted">Username</label>
@@ -129,7 +146,7 @@ const ProfileUpdate = () => {
       <div className="container">
         <div className="row">
           <div className="col-md-4">image</div>
-          <div className="col-md-12">{profileUpdateForm()}</div>
+          <div className="col-md-12 mb-5">{profileUpdateForm()}</div>
         </div>
       </div>
     </React.Fragment>
