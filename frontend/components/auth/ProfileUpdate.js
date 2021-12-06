@@ -196,7 +196,12 @@ const ProfileUpdate = () => {
       <div className="container">
         <div className="row">
           <div className="col-md-4">image</div>
-          <div className="col-md-12 mb-5">{profileUpdateForm()}</div>
+          <div className="col-md-12 mb-5">
+            {showLoading()}
+            {showError()}
+            {showSuccess()}
+            {profileUpdateForm()}
+          </div>
         </div>
       </div>
     </React.Fragment>
