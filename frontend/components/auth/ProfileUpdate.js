@@ -195,7 +195,14 @@ const ProfileUpdate = () => {
     <React.Fragment>
       <div className="container">
         <div className="row">
-          <div className="col-md-4">image</div>
+          <div className="col-md-4">
+            <img
+              src={`${API}/user/photo/${username}`}
+              className="img img-fluid img-thumbnail mb-3"
+              alt="User profile"
+              style={{ maxHeight: "auto", maxWidth: "100%" }}
+            />
+          </div>
           <div className="col-md-12 mb-5">
             {showLoading()}
             {showError()}
