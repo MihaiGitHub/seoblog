@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import Router from "next/router";
-import { getCookie, isAuth } from "../../actions/auth";
+import { getCookie, isAuth, updateUser } from "../../actions/auth";
 import { getProfile, update } from "../../actions/user";
 
 const ProfileUpdate = () => {
@@ -84,14 +84,16 @@ const ProfileUpdate = () => {
           loading: false,
         });
       } else {
-        setValues({
-          ...values,
-          username: data.username,
-          name: data.name,
-          email: data.email,
-          about: data.about,
-          success: true,
-          loading: false,
+        updateUser(data, () => {
+          setValues({
+            ...values,
+            username: data.username,
+            name: data.name,
+            email: data.email,
+            about: data.about,
+            success: true,
+            loading: false,
+          });
         });
       }
     });

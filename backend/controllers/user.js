@@ -92,6 +92,8 @@ exports.update = (req, res) => {
       }
 
       user.hashed_password = undefined;
+      user.salt = undefined;
+      user.photo = undefined;
       res.json(user);
     });
   });
