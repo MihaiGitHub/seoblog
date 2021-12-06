@@ -164,6 +164,33 @@ const ProfileUpdate = () => {
     </form>
   );
 
+  const showError = () => (
+    <div
+      className="alert alert-danger"
+      style={{ display: error ? "" : "none" }}
+    >
+      All fields are required
+    </div>
+  );
+
+  const showSuccess = () => (
+    <div
+      className="alert alert-success"
+      style={{ display: success ? "" : "none" }}
+    >
+      Profile updated
+    </div>
+  );
+
+  const showLoading = () => (
+    <div
+      className="alert alert-info"
+      style={{ display: loading ? "" : "none" }}
+    >
+      Loading...
+    </div>
+  );
+
   return (
     <React.Fragment>
       <div className="container">
