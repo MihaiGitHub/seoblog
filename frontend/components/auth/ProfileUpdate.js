@@ -1,12 +1,14 @@
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Router from "next/router";
 import { getCookie, isAuth, updateUser } from "../../actions/auth";
 import { getProfile, update } from "../../actions/user";
+import { API } from "../../config";
 
 const ProfileUpdate = () => {
   const [values, setValues] = useState({
     username: "",
+    username_for_photo: "",
     name: "",
     email: "",
     about: "",
@@ -15,12 +17,13 @@ const ProfileUpdate = () => {
     success: false,
     loading: false,
     photo: "",
-    userData: "",
+    userData: process.browser && new FormData(),
   });
 
-  const token = getCookie(token);
+  const token = getCookie("token");
   const {
     username,
+    username_for_photo,
     name,
     email,
     about,
@@ -40,6 +43,7 @@ const ProfileUpdate = () => {
         setValues({
           ...values,
           username: data.username,
+          username_for_photo: data.username,
           name: data.name,
           email: data.email,
           about: data.about,
@@ -50,21 +54,19 @@ const ProfileUpdate = () => {
 
   useEffect(() => {
     init();
+    setValues({ ...values, userData: new FormData() });
   }, []);
 
-  // first get the name, then the event, then handle it
   const handleChange = (name) => (e) => {
+    // console.log(e.target.value);
     const value = name === "photo" ? e.target.files[0] : e.target.value;
-
-    // populate formData with the name and value, send all data from form as form data to backend
-    let userFormData = new FormData();
-    userFormData.set(name, value);
-
-    // populate the state
+    // let userData = new FormData();
+    userData.set(name, value);
+    console.log(...userData); // SEE THE FORMDATA IN CONSOLE
     setValues({
       ...values,
       [name]: value,
-      userData: userFormData,
+      userData,
       error: false,
       success: false,
     });
@@ -74,15 +76,10 @@ const ProfileUpdate = () => {
     e.preventDefault();
 
     setValues({ ...values, loading: true });
-
     update(token, userData).then((data) => {
       if (data.error) {
-        setValues({
-          ...values,
-          error: data.error,
-          success: false,
-          loading: false,
-        });
+        console.log("data.error", data.error);
+        setValues({ ...values, error: data.error, loading: false });
       } else {
         updateUser(data, () => {
           setValues({
@@ -91,6 +88,7 @@ const ProfileUpdate = () => {
             name: data.name,
             email: data.email,
             about: data.about,
+            password: "",
             success: true,
             loading: false,
           });
@@ -103,8 +101,7 @@ const ProfileUpdate = () => {
     <form onSubmit={handleSubmit}>
       <div className="form-group">
         <label className="btn btn-outline-info">
-          Upload featured image
-          {/* accept all image files */}
+          Profile photo
           <input
             onChange={handleChange("photo")}
             type="file"
@@ -131,18 +128,13 @@ const ProfileUpdate = () => {
           className="form-control"
         />
       </div>
-      <div className="form-group">
-        <label className="text-muted">Email</label>
-        <input
-          onChange={handleChange("email")}
-          type="text"
-          value={email}
-          className="form-control"
-        />
-      </div>
+      {/*<div className="form-group">
+                <label className="text-muted">Email</label>
+                <input onChange={handleChange('email')} type="text" value={email} className="form-control" />
+            </div>*/}
       <div className="form-group">
         <label className="text-muted">About</label>
-        <input
+        <textarea
           onChange={handleChange("about")}
           type="text"
           value={about}
@@ -159,8 +151,17 @@ const ProfileUpdate = () => {
         />
       </div>
       <div>
-        <button type="submit" className="btn btn-primary">
-          Submit
+        {showSuccess()}
+        {showError()}
+        {showLoading()}
+      </div>
+      <div>
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={!username || !name || !email}
+        >
+          Update
         </button>
       </div>
     </form>
@@ -171,7 +172,7 @@ const ProfileUpdate = () => {
       className="alert alert-danger"
       style={{ display: error ? "" : "none" }}
     >
-      All fields are required
+      {error}
     </div>
   );
 
@@ -199,18 +200,13 @@ const ProfileUpdate = () => {
         <div className="row">
           <div className="col-md-4">
             <img
-              src={`${API}/user/photo/${username}`}
+              src={`${API}/user/photo/${username_for_photo}`}
               className="img img-fluid img-thumbnail mb-3"
               alt="User profile"
               style={{ maxHeight: "auto", maxWidth: "100%" }}
             />
           </div>
-          <div className="col-md-12 mb-5">
-            {showLoading()}
-            {showError()}
-            {showSuccess()}
-            {profileUpdateForm()}
-          </div>
+          <div className="col-md-8 mb-5">{profileUpdateForm()}</div>
         </div>
       </div>
     </React.Fragment>
