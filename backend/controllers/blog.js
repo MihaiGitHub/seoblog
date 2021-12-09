@@ -5,6 +5,7 @@ const { stripHtml } = require("string-strip-html");
 const _ = require("lodash");
 const Category = require("../models/category");
 const Tag = require("../models/tag");
+const User = require("../models/user");
 const Blog = require("../models/blog");
 const { errorHandler } = require("../helpers/dbErrorHandler");
 const fs = require("fs");
@@ -354,4 +355,33 @@ exports.listSearch = (req, res) => {
       }
     ).select("-photo -body"); // do not select photo and body in results
   }
+};
+
+exports.listByUser = (req, res) => {
+  User.findOne({
+    username: req.params.username,
+  }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: errorHandler(err),
+      });
+    }
+
+    let userId = user._id;
+
+    Blog.find({ postedBy: userId })
+      .populate("categories", "_id name slug")
+      .populate("tags", "_id name slug")
+      .populate("postedBy", "_id name username")
+      .select("_id title slug postedBy createdAt updatedAt")
+      .exec((err, data) => {
+        if (err) {
+          return res.status(400).json({
+            error: errorHandler(err),
+          });
+        }
+
+        res.json(data);
+      });
+  });
 };

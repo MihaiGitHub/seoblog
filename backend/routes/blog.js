@@ -10,6 +10,7 @@ const {
   photo,
   listRelated,
   listSearch,
+  listByUser,
 } = require("../controllers/blog");
 const {
   adminMiddleware,
@@ -29,6 +30,7 @@ router.get("/blogs/search", listSearch);
 
 // auth user blog crud
 router.post("/user/blog", requireSignin, authMiddleware, create);
+router.get("/:username/blogs", listByUser);
 router.delete("/user/blog/:slug", requireSignin, authMiddleware, remove);
 router.put("/user/blog/:slug", requireSignin, authMiddleware, update);
 
