@@ -109,7 +109,15 @@ export const removeBlog = (slug, token) => {
 };
 
 export const updateBlog = (blog, token, slug) => {
-  return fetch(`${API}/blog/${slug}`, {
+  let updateBlogEndpoint;
+
+  if (isAuth() && isAuth().role === 1) {
+    updateBlogEndpoint = `${API}/blog/${slug}`;
+  } else if (isAuth() && isAuth().role === 0) {
+    updateBlogEndpoint = `${API}/user/blog/${slug}`;
+  }
+
+  return fetch(`${updateBlogEndpoint}`, {
     method: "POST",
     headers: {
       Accept: "application/json",
