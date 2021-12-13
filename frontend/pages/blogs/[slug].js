@@ -8,6 +8,7 @@ import { API, DOMAIN, APP_NAME, FB_APP_ID } from "../../config";
 import renderHTML from "react-render-html";
 import moment from "moment";
 import Card from "../../components/blog/Card";
+import DisqusThread from "../../components/DisqusThread";
 
 // client side parameter is available as router
 const SingleBlog = ({ blog, query }) => {
@@ -75,6 +76,18 @@ const SingleBlog = ({ blog, query }) => {
     ));
   };
 
+  const showComments = () => {
+    return (
+      <div>
+        <DisqusThread
+          id={blog.id}
+          title={blog.title}
+          path={`/blog/${blog.slug}`}
+        />
+      </div>
+    );
+  };
+
   return (
     <React.Fragment>
       <Layout>
@@ -122,9 +135,7 @@ const SingleBlog = ({ blog, query }) => {
               <hr />
               <div className="row">{showRelatedBlogs()}</div>
             </div>
-            <div className="container pb-5">
-              <p>show comments</p>
-            </div>
+            <div className="container pt-5 pb-5">{showComments()}</div>
           </article>
         </main>
       </Layout>

@@ -9,5 +9,6 @@ module.exports = withCSS({
     DOMAIN_DEVELOPMENT: "http://localhost:3000",
     DOMAIN_PRODUCTION: "https://seoblog.com",
     FB_APP_ID: "2123444421",
+    DISQUS_SHORTNAME: "seoblog-bbzxgbg2un",
   },
 });
