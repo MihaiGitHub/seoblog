@@ -17,6 +17,23 @@ const ContactForm = () => {
 
   const clickSubmit = (e) => {
     e.preventDefault();
+
+    setValues({ ...values, buttonText: "Sending..." });
+    emailContactForm({ name, email, message }).then((data) => {
+      if (data.error) {
+        setValues({ ...values, error: data.error });
+      } else {
+        setValues({
+          ...values,
+          sent: true,
+          name: "",
+          email: "",
+          message: "",
+          buttonText: "Sent",
+          success: data.success,
+        });
+      }
+    });
   };
 
   const handleChange = (name) => (e) => {
