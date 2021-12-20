@@ -102,7 +102,13 @@ const ContactForm = () => {
     );
   };
 
-  return <React.Fragment>{contactForm()}</React.Fragment>;
+  return (
+    <React.Fragment>
+      {showSuccessMessage()}
+      {showErrorMessage()}
+      {contactForm()}
+    </React.Fragment>
+  );
 };
 
 export default ContactForm;
