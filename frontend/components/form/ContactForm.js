@@ -47,6 +47,11 @@ const ContactForm = () => {
     });
   };
 
+  const showSuccessMessage = () =>
+    success && (
+      <div className="alert alert-info">Thank you for contacting us</div>
+    );
+
   const contactForm = () => {
     return (
       <form onSubmit={clickSubmit} className="pb-5">
