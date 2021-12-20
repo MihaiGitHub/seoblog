@@ -52,6 +52,15 @@ const ContactForm = () => {
       <div className="alert alert-info">Thank you for contacting us</div>
     );
 
+  const showErrorMessage = (
+    <div
+      className="alert alert-danger"
+      style={{ display: error ? "block" : "none" }}
+    >
+      {error}
+    </div>
+  );
+
   const contactForm = () => {
     return (
       <form onSubmit={clickSubmit} className="pb-5">
