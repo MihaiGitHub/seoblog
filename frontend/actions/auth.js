@@ -155,3 +155,18 @@ export const forgotPassword = (email) => {
     })
     .catch((err) => console.log(err));
 };
+
+export const resetPassword = (resetInfo) => {
+  return fetch(`${API}/reset-password`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(resetInfo),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => console.log(err));
+};
