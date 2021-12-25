@@ -10,6 +10,43 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const _ = require("lodash");
 
 exports.signup = (req, res) => {
+  const { name, email, password } = req.body;
+  User.findOne({ email: email.toLowerCase() }, (err, user) => {
+    if (user) {
+      return res.status(400).json({
+        error: "Email is taken",
+      });
+    }
+
+    // generate jwt with name, email, password and send to client
+    const token = jwt.sign(
+      { name, email, password },
+      process.env.JWT_ACCOUNT_ACTIVATION,
+      {
+        expiresIn: "1d",
+      }
+    );
+
+    const emailData = {
+      from: process.env.EMAIL_FROM,
+      to: email,
+      subject: `Account activation link`,
+      html: `
+      <p>Please use the following link to activate your account:</p>
+      <p>${process.env.CLIENT_URL}/auth/activate/activate/${token}</p>
+      <hr />
+      <p>This email may contain sensitive information</p>`,
+    };
+
+    sgMail.send(emailData).then((sent) => {
+      return res.json({
+        message: `Email has been sent to ${email}. Follow the instructions to activate your account`,
+      });
+    });
+  });
+};
+
+exports.signup = (req, res) => {
   User.findOne({ email: req.body.email }).exec((err, user) => {
     // if email is in database user already exists
     if (user) {
