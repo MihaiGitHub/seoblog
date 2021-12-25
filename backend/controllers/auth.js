@@ -9,7 +9,7 @@ const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const _ = require("lodash");
 
-exports.signup = (req, res) => {
+exports.preSignup = (req, res) => {
   const { name, email, password } = req.body;
   User.findOne({ email: email.toLowerCase() }, (err, user) => {
     if (user) {
