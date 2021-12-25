@@ -45,7 +45,7 @@ const ResetPassword = ({ router }) => {
       <form onSubmit={handleSubmit}>
         <div className="form-group pt-5">
           <input
-            type="email"
+            type="password"
             onChange={(e) =>
               setValues({ ...values, newPassword: e.target.value })
             }
@@ -69,7 +69,7 @@ const ResetPassword = ({ router }) => {
 
   return (
     <Layout>
-      <div className="container-fluid">
+      <div className="container">
         <h2>Reset password</h2>
         <hr />
         {showError()}
@@ -80,4 +80,4 @@ const ResetPassword = ({ router }) => {
   );
 };
 
-export default ResetPassword;
+export default withRouter(ResetPassword);
