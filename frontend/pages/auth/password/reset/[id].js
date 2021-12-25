@@ -74,7 +74,7 @@ const ResetPassword = ({ router }) => {
         <hr />
         {showError()}
         {showMessage()}
-        {showForm() && passwordResetForm()}
+        {passwordResetForm()}
       </div>
     </Layout>
   );
