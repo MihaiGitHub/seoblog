@@ -23,7 +23,7 @@ const ActivateAccount = ({ router }) => {
       const { name } = jwt.decode(token);
       setValues({ ...values, name, token });
     }
-  }, []);
+  }, [router]);
 
   const clickSubmit = (e) => {
     e.preventDefault();
