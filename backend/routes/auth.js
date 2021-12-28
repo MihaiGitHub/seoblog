@@ -7,6 +7,8 @@ const {
   requireSignin,
   forgotPassword,
   resetPassword,
+  preSignup,
+  googleLogin,
 } = require("../controllers/auth");
 
 // validators
@@ -16,7 +18,6 @@ const {
   userSigninValidator,
   forgotPasswordValidator,
   resetPasswordValidator,
-  preSignup,
 } = require("../validators/auth");
 
 router.post("/pre-signup", userSignupValidator, runValidation, preSignup);
@@ -35,5 +36,6 @@ router.put(
   runValidation,
   resetPassword
 );
+router.post("/google-login", googleLogin);
 
 module.exports = router;
