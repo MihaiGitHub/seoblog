@@ -2,14 +2,33 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import Router from "next/router";
 import GoogleLogin from "react-google-login";
-import { loginWithGoogle } from "../../actions/auth";
+import { loginWithGoogle, authenticate, isAuth } from "../../actions/auth";
 import { GOOGLE_CLIENT_ID } from "../../config";
 
 const LoginGoogle = () => {
+  const responseGoogle = (response) => {
+    const tokenId = response.tokenId;
+    const user = { tokenId };
+
+    loginWithGoogle(user).then((data) => {
+      if (data.error) {
+        console.log(data.error);
+      } else {
+        authenticate(data, () => {
+          if (isAuth() && isAuth().role == 1) {
+            Router.push(`/admin`);
+          } else {
+            Router.push(`/user`);
+          }
+        });
+      }
+    });
+  };
+
   return (
-    <div className="login-with-google-div">
+    <div className="pb-3">
       <GoogleLogin
-        clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+        clientId={`${GOOGLE_CLIENT_ID}`}
         buttonText="Login with Google"
         onSuccess={responseGoogle}
         onFailure={responseGoogle}
