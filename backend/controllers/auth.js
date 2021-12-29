@@ -306,7 +306,7 @@ exports.googleLogin = (req, res) => {
               user: { _id, email, name, role, username },
             });
           } else {
-            let username = shortid.generate();
+            let username = shortId.generate();
             let profile = `${process.env.CLIENT_URL}/profile/${username}`;
             let password = jti;
             user = new User({ name, email, profile, username });
