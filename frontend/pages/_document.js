@@ -1,6 +1,20 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
+import getConfig from "next/config";
+const { publicRuntimeConfig } = getConfig();
 
 class MyDocument extends Document {
+  setGoogleTags() {
+    if (publicRuntimeConfig.PRODUCTION) {
+      return {
+        __html: `
+        window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+        ga('create', 'UA-XXXXX-Y', 'auto');
+        ga('send', 'pageview');
+        `,
+      };
+    }
+  }
+
   render() {
     return (
       <Html lang="en">
@@ -24,6 +38,11 @@ class MyDocument extends Document {
             href="//cdn.quilljs.com/1.2.6/quill.snow.css"
           ></link>
           <link rel="stylesheet" href="/static/css/styles.css" />
+          <script
+            async
+            src="https://www.google-analytics.com/analytics.js"
+          ></script>
+          <script dangerouslySetInnerHTML={this.setGoogleTags()}></script>
         </Head>
         <body>
           <Main />
